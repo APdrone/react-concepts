@@ -1,48 +1,88 @@
 import { useState } from 'react';
 import './index.css';
 
-const messages = ['Learn React ⚛️', 'Apply for jobs 💼', 'Invest your new income 🤑'];
+
+const initialItems = [
+  { id: 1, description: 'Passports', quantity: 2, packed: false },
+  { id: 2, description: 'Socks', quantity: 12, packed: false },
+  { id: 3, description: 'Charger', quantity: 1, packed: true },
+];
 
 function App() {
-  let [step, setStep] = useState(1);
-  const [isOpen, setIsOpen] = useState(true);
-
-  function handlePrevious() {
-    if (step > 1) setStep((s) => s - 1);
-  }
-
-  function handleNext() {
-    if (step < 3) setStep((s) => s + 1);
-    // test.name = 'Fred';
-  }
   return (
     <>
-      <button className="close" onClick={() => setIsOpen((is) => !is)}>
-        {isOpen ? '\u00D7' : '\u039E'}
-      </button>
-      {isOpen && (
-        <div className="steps">
-          <div className="numbers">
-            <div className={step >= 1 ? 'active' : ''}>1</div>
-            <div className={step >= 2 ? 'active' : ''}>2</div>
-            <div className={step >= 3 ? 'active' : ''}>3</div>
-          </div>
-          <p className="message">
-            Step {step}: {messages[step - 1]}
-            {/* {test.name} */}
-          </p>
-
-          <div className="buttons">
-            <button style={{ backgroundColor: '#7950f2', color: '#fff' }} onClick={handlePrevious}>
-              Previous
-            </button>
-            <button style={{ backgroundColor: '#7950f2', color: '#fff' }} onClick={handleNext}>
-              Next
-            </button>
-          </div>
-        </div>
-      )}
+      <h1> yes</h1>
+      <Logo />
+      <Form />
+      <PackingList />
+      <Stats />
     </>
+  );
+}
+
+function Logo() {
+  return <h1>🌴 Far Away 👜</h1>;
+}
+
+function Form() {
+  const [description, setDescription] = useState('');
+  const [quantity, setQuantity] = useState(1);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    // console.log(e);
+    // console.log(quantity, description);
+    if (!description) return;
+    const newItem = { id: Date.now(), description, quantity, packed: false };
+    console.log(newItem);
+    setDescription('');
+    setQuantity(1);
+  }
+
+  return (
+    <form className="add-form" onSubmit={handleSubmit}>
+      <h3>What do you need for your 😍 trip?</h3>
+      <select value={quantity} onChange={(e) => setQuantity(Number(e.target.value))}>
+        {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+          <option key={num} value={num}>
+            {num}
+          </option>
+        ))}
+      </select>
+      <input type="text" placeholder="Item..." value={description} onChange={(e) => setDescription(e.target.value)} />
+      <button>Add</button>
+    </form>
+  );
+}
+
+function PackingList() {
+  return (
+    <div className="list">
+      <ul>
+        {initialItems.map((item) => (
+          <Item item={item} key={item.id} />
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function Stats() {
+  return (
+    <footer className="stats">
+      <em>You have X items on your list, and you already packed X (X %)</em>
+    </footer>
+  );
+}
+
+function Item({ item: { id, description, quantity, packed } }) {
+  return (
+    <li>
+      <span style={packed ? { textDecoration: 'line-through' } : {}}>
+        {quantity} {description}
+      </span>
+      <button>❌</button>
+    </li>
   );
 }
 
